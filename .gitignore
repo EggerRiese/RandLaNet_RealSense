@@ -1,0 +1,6 @@
+.idea
+/__pycache__
+/train_log
+/results
+log_train_*.txt
+/data/RealSense/*

@@ -3,5 +3,8 @@
 /train_log
 /results
 log_train_*.txt
+log_test_*.txt
 /data/RealSense/*
 !empty.txt
+*.zip
+/test

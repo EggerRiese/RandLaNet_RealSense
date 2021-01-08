@@ -75,7 +75,7 @@ def convert_pc2ply(filePath, save_path):
 
 
 if __name__ == '__main__':
-    dirPath = "/home/joshua/Dokumente/Bachelor/Aufnahmen/Studie/RandLaNet/train/with_bg/labeled/"
+    dirPath = "/home/joshua/Dokumente/Bachelor/Aufnahmen/Studie/RandLaNet/evaluation/labeled/"
     for filePath in glob.iglob(dirPath + '*.pcd'):
         print(filePath)
         elements = str(filePath).split('/')

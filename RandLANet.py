@@ -77,6 +77,7 @@ class Network:
 
             self.loss = self.get_loss(valid_logits, valid_labels, self.class_weights)
 
+
         with tf.variable_scope('optimizer'):
             self.learning_rate = tf.Variable(config.learning_rate, trainable=False, name='learning_rate')
             self.train_op = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
@@ -158,10 +159,9 @@ class Network:
                        self.labels,
                        self.accuracy]
                 _, _, summary, l_out, probs, labels, acc = self.sess.run(ops, {self.is_training: True})
-                print("ops")
                 self.train_writer.add_summary(summary, self.training_step)
                 t_end = time.time()
-                if self.training_step % 50 == 0:
+                if True: # self.training_step % 50 == 0
                     message = 'Step {:08d} L_out={:5.3f} Acc={:4.2f} ''---{:8.2f} ms/batch'
                     log_out(message.format(self.training_step, l_out, acc, 1000 * (t_end - t_start)), self.Log_file)
                 self.training_step += 1
@@ -176,6 +176,7 @@ class Network:
                     self.saver.save(self.sess, snapshot_directory + '/snap', global_step=self.training_step)
                 self.mIou_list.append(m_iou)
                 log_out('Best m_IoU is: {:5.3f}'.format(max(self.mIou_list)), self.Log_file)
+                
 
                 self.training_epoch += 1
                 self.sess.run(dataset.train_init_op)

@@ -13,7 +13,7 @@ import time, pickle, argparse, glob, os
 class RealSense:
     def __init__(self, test_area_idx):
         self.name = 'RealSense'
-        self.path = '/home/joshua/Dokumente/Bachelor/RandLa-Net/RandLA-Net/data/RealSense/'
+        self.path = '/home/joshua/Dokumente/Bachelor/github/RandLaNet_RealSense/data/RealSense/'
         self.label_to_names = {0: 'void',
                                1: 'apple',
                                2: 'banana',
@@ -32,7 +32,8 @@ class RealSense:
         self.label_to_idx = {l: i for i, l in enumerate(self.label_values)}
         self.ignored_labels = np.array([])
 
-        self.val_split = str(test_area_idx)
+        self.val_split = '_{:s}'.format(str(test_area_idx))
+        #self.val_split = '10_1'
         self.all_files = glob.glob(join(self.path, 'original_ply', '*.ply'))
 
         # Initiate containers
@@ -48,13 +49,15 @@ class RealSense:
 
     def load_sub_sampled_clouds(self, sub_grid_size):
         tree_path = join(self.path, 'input_{:.3f}'.format(sub_grid_size))
+        print(tree_path)
         for i, file_path in enumerate(self.all_files):
+            print(file_path)
             t0 = time.time()
             cloud_name = file_path.split('/')[-1][:-4]
             if self.val_split in cloud_name:
                 cloud_split = 'validation'
             else:
-                cloud_split = 'training'
+                cloud_split = 'training' #training
 
             # Name of the input files
             kd_tree_file = join(tree_path, '{:s}_KDTree.pkl'.format(cloud_name))
@@ -199,9 +202,7 @@ class RealSense:
         gen_function, gen_types, gen_shapes = self.get_batch_gen('training')
         gen_function_val, _, _ = self.get_batch_gen('validation')
         self.train_data = tf.data.Dataset.from_generator(gen_function, gen_types, gen_shapes)
-        print("train data: {}".format(self.train_data))
         self.val_data = tf.data.Dataset.from_generator(gen_function_val, gen_types, gen_shapes)
-        print("val data: {}".format(self.val_data))
 
         self.batch_train_data = self.train_data.batch(cfg.batch_size)
         self.batch_val_data = self.val_data.batch(cfg.val_batch_size)
@@ -222,7 +223,7 @@ class RealSense:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu', type=int, default=0, help='the number of GPUs to use [default: 0]')
-    parser.add_argument('--validation_nr', type=int, default=1, help='Which number to use for validation, option: 1-9 [default: 1]')
+    parser.add_argument('--validation_nr', type=int, default=3, help='Which number to use for validation, option: 1-9 [default: 1]')
     parser.add_argument('--mode', type=str, default='train', help='options: train, test, vis')
     parser.add_argument('--model_path', type=str, default='None', help='pretrained model path')
     FLAGS = parser.parse_args()
